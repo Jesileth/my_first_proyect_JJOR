@@ -37,7 +37,7 @@ async function main() {
 
  const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Si necesitas crear Users con el tenantId:
+  // Users con el tenantId:
   const user = await prisma.user.create({
     data: {
       email,
