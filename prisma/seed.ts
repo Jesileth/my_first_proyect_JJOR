@@ -1,33 +1,70 @@
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // Crear Tenant
-  const tenant = await prisma.tenant.create({
-    data: {
-      name: 'Tenant prueba',
-    },
+   // Datos del tenant
+  const tenantData =  'Rosalyne Doe'
+
+  // Datos del usuario
+  /*const userData = {
+  email: 'admin@miempresa.com',
+  name: 'Johana Ramírez',
+  password: 'Admin12345',
+  telephone: '50588888888',
+  role: 'ADMIN',
+};*/
+
+ // Datos del usuario
+  const email = 'Rosalyne@miempresa.com';
+  const name = 'Rosalyne Doe R';
+  const password = 'johan1579';
+  const telephone = '50587888888';
+
+    // Tenant: busca por nombre, si no existe lo crea
+   const existing = await prisma.user.findUnique({
+    where: { email },
   });
 
-  console.log('Tenant creado:', tenant);
+  if (existing) {
+    console.log('El usuario ya existe:', existing.email);
+    return;
+  }
+
+  console.log('Tenant creado:', tenantData);
+
+ const hashedPassword = await bcrypt.hash(password, 10);
 
   // Si necesitas crear Users con el tenantId:
-  const user = await prisma.user.upsert({
-  where: { email: 'prueba@example.com' },   // debe coincidir con tu email
-  update: {},                              // si existe, no cambia nada
-  create: {
-    email: 'prueba@example.com',
-    name: 'PruebaUser',
-    password: 'hashed_password_here',
-    role: 'ADMIN',
-    tenantId: tenant.id,
-  },
-});
+  const user = await prisma.user.create({
+    data: {
+      email,
+      name,
+      password: hashedPassword,
+      telephone,
+      role: Role.USER,
+      tenant: {
+        create: { name: tenantData },
+      },
+    },
+    include: { tenant: true },
+  });
 
-  console.log('User creado:', user);
+  
+/*  console.log('User creado:', user);*/
+ console.log('Usuario creado:', {
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    tenantId: user.tenantId,
+    tenantName: user.tenant.name,
+  });
+
 }
+
+
 
 main()
   .catch((e) => {
