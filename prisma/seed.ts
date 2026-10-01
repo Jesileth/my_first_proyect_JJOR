@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 async function main() {
    // Datos del tenant
-  const tenantData =  'Rosalyne Doe'
+  const tenantData =  'J Doe'
 
   // Datos del usuario
   /*const userData = {
@@ -18,10 +18,10 @@ async function main() {
 };*/
 
  // Datos del usuario
-  const email = 'Rosalyne@miempresa.com';
-  const name = 'Rosalyne Doe R';
-  const password = 'johan1579';
-  const telephone = '50587888888';
+  const email = 'Jane1@gmail.com';
+  const name = 'J Doe';
+  const password = '1234';
+  const telephone = '87888888';
 
     // Tenant: busca por nombre, si no existe lo crea
    const existing = await prisma.user.findUnique({
@@ -57,6 +57,7 @@ async function main() {
  console.log('Usuario creado:', {
     id: user.id,
     email: user.email,
+    password: user.password,
     role: user.role,
     tenantId: user.tenantId,
     tenantName: user.tenant.name,
