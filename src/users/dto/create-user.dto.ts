@@ -14,7 +14,7 @@ export class CreateUserDto {
     @ApiProperty ({required: true, example : 'password123'})
     password : string
 
-    @ApiProperty ({required: true, example: 1, description: 'ID del tenant'})
-    tenantId : number;
+    @ApiProperty ({required: true, example: 'Tenant'})
+    tenantName : string;
 
 }

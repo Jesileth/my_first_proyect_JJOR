@@ -10,12 +10,20 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
    async create(createUserDto: CreateUserDto) {
+
+    const { password, tenantName, ...userData } = createUserDto;
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
     return this.prisma.user.create({
       data: {
-        ...createUserDto,
+        ...userData,
         password: hashedPassword, // <-- Se guarda el hash, no el texto plano
+        tenant: 
+        {
+          create: { name: tenantName ?? userData.name ?? userData.email },
+        },
       },
+        include: { tenant: true },
     });
   }
 
